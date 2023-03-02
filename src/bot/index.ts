@@ -1,35 +1,28 @@
-import { OfficialPuppetNpmName, WechatyBuilder, WechatyOptions } from 'wechaty'
-import Robot from '../models/bot'
-import onLogin from './lib/onlogin'
+import { WechatyBuilder, WechatyOptions } from 'wechaty'
 
-class Bot {
-  constructor(public id: string) {
-    this.id = id
-  }
-  async init() {
-    const bot = await Robot.findOne({ id: this.id }, { token: 1, nickName: 1, id: 1 })
-    if (!bot) throw { message: '机器人不存在' }
-    const config: WechatyOptions = {
-      name: bot.nickName,
+export class WechatyFactory {
+  private instances: Map<string, unknown> = new Map()
+
+  public createWechatyBot(name: string, token: string) {
+    const options = {
+      name,
+      puppet: 'wechaty-puppet-wechat',
       puppetOptions: {
         uos: true,
+        token,
       },
-      puppet: bot.puppet as OfficialPuppetNpmName,
-    }
-    const chatBot = WechatyBuilder.build(config)
-    chatBot.use()
-    const result = await new Promise((resolve) => {
-      chatBot
-        .on('scan', (qrcode) => {
-          resolve(qrcode)
-        })
-        .on('login', async (user) => {
-          const res = await onLogin(chatBot, this.id, user)
-          resolve(res)
-        })
-    })
-    return result
+    } as WechatyOptions
+    return WechatyBuilder.build(options)
+  }
+
+  public setWechatyInstanceId(name: string, id: string) {
+    this.instances.set(name, id)
+  }
+  public getWechaty(id: string) {
+    return this.instances.get(id)
+  }
+
+  public getAllWechatyIds(): string[] {
+    return Array.from(this.instances.keys())
   }
 }
-
-export default Bot

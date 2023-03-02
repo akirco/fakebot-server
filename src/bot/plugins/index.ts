@@ -1,15 +1,8 @@
-import { ScanStatus, WechatyPlugin, WechatyOptions, Wechaty } from 'wechaty'
-type WechatFactoryPluginOptions = WechatyOptions & {
-  uid: string
-  botId?: string
-}
+// import { ScanStatus, WechatyOptions } from 'wechaty'
+// import type { WechatyPlugin, Wechaty } from 'wechaty'
 
-export function WechatFactoryPlugin(config?: WechatFactoryPluginOptions): WechatyPlugin {
-  return function (bot: Wechaty) {
-    bot.on('scan', (qrcode, status, data) => {
-      if (status === ScanStatus.Waiting) {
-        console.log(qrcode, data, config)
-      }
-    })
-  }
-}
+// export function WechatFactoryPlugin(): WechatyPlugin {
+//   return function (bot: Wechaty) {
+
+//   }
+// }

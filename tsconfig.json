@@ -7,7 +7,7 @@
     /**
      * ES Module support
      */
-    "target": "ESNext",
+    "target": "ES2016",
 
     // ES Modules: https://www.typescriptlang.org/tsconfig#module
     // https://devblogs.microsoft.com/typescript/announcing-typescript-4-5-beta/#esm-nodejs
@@ -33,8 +33,8 @@
     "resolveJsonModule": false,
 
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "declarationMap": false,
+    "sourceMap": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
 
@@ -44,7 +44,7 @@
     "lib": ["esnext"],
     "outDir": "dist",
 
-    "strict": true,
+    "strict": false,
     "noEmitOnError": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
@@ -60,5 +60,5 @@
   },
 
   "exclude": ["node_modules/", "dist/"],
-  "include": ["src/**/*.ts"]
+  "include": ["src"]
 }

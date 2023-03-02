@@ -1,19 +1,21 @@
 import mongoose from 'mongoose'
 import { config } from '../config'
 
-const dbConnect = () => {
-  mongoose.connect(config.mongoUrl)
+export const dbState = () => {
+  mongoose.connect(config.mongodbUrl)
   const db = mongoose.connection
-  mongoose.Promise = global.Promise
-  db.on('error', function (err) {
-    console.log('数据库连接出错', err)
+
+  db.on('connecte', () => {
+    console.log('connected to mongoDB')
   })
-  db.on('open', function () {
-    console.log('数据库连接成功')
+
+  db.on('error', (error) => {
+    console.log('mongoDB error:', error)
   })
-  db.on('disconnected', function () {
-    console.log('数据库连接断开')
+
+  db.on('disconnected', () => {
+    console.log('disconnected to mongoDB')
   })
 }
 
-export { dbConnect, mongoose }
+export const mg = mongoose
