@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "name": "wechatbot",
+      "name": "chatbot",
       "cwd": "./",
-      "script": "./src/app.ts",
+      "script": "./dist/app.js",
       "log_date_format": "YYYY-MM-DD HH:mm Z",
       "error_file": "./logs/app-err.log",
       "out_file": "./logs/app-out.log",
