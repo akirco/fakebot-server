@@ -2,11 +2,12 @@ import { WechatyBuilder, WechatyOptions, ScanStatus } from 'wechaty'
 import cluster, { Worker } from 'cluster'
 import logger from '../utils/logger'
 import { connect } from '../utils/connect'
-import createServer from './app'
+import { io, app } from './app'
 
 import type { MessageInterface, ContactSelfInterface } from 'wechaty/impls'
 import type { WorkerMessage, WorkerRepuestInfo } from '../types'
 import type { Context, Next } from 'koa'
+import { config } from '../config'
 
 export default class WechatyBot {
   masterProcess: typeof process
@@ -28,7 +29,10 @@ export default class WechatyBot {
       // connect mongodb
       await connect()
       // Create server to receive requests & bind a middware
-      await createServer(this.handleRequest.bind(this))
+      app.use(this.handleRequest.bind(this))
+      app.listen(config.port, () => {
+        logger.info(`🫵\tServer running on http://localhost:${config.port}`)
+      })
       cluster.on('message', this.handleWorkerMessage.bind(this))
 
       cluster.on('exit', this.handleWorkerExit.bind(this))
@@ -105,6 +109,11 @@ export default class WechatyBot {
   private handleWorkerMessage(_worker: Worker, message: WorkerMessage) {
     if (message) {
       console.log('handleWorkerMessage', message)
+      io.on('connection', (socket) => {
+        socket.on('scan', () => {
+          console.log(123)
+        })
+      })
     }
   }
 
