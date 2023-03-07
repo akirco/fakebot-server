@@ -43,7 +43,6 @@
 
     "lib": ["esnext"],
     "outDir": "dist",
-
     "strict": false,
     "noEmitOnError": true,
     "noUnusedLocals": true,
@@ -56,7 +55,8 @@
     "noImplicitAny": true,
     "noUnusedParameters": true,
     "noImplicitThis": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "pretty": true
   },
 
   "exclude": ["node_modules/", "dist/"],

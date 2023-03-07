@@ -1,10 +1,13 @@
 import type { Context } from 'koa'
-import { route } from './routeDecorator'
-import { api, http } from './enum'
+import Service from '../service'
 
 export class Controller {
-  @route(api.home, http.get)
   async Home(ctx: Context): Promise<void> {
     ctx.body = 'hello world!'
+  }
+  async Signup(ctx: Context): Promise<void> {
+    const data = ctx.request.body
+    const result = await Service.signup(data)
+    ctx.body = result
   }
 }

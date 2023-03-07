@@ -22,3 +22,10 @@ export const MSG = Object.freeze({
   503: 'service busy',
   1001: 'some custom error msg',
 })
+
+export const EVENT_TYPE = Object.freeze({
+  0: 'onStart',
+  1: 'onScan',
+  2: 'onLogin',
+  3: '',
+})

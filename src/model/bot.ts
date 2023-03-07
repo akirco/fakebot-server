@@ -1,24 +1,22 @@
-class Bot {
-  qrcode: string
-  user: Bot.ContactSelfInterface
-  constructor() {
-    this.qrcode = ''
-    this.user = {} as Bot.ContactSelfInterface
-  }
-  setQRCode(qrcode: string) {
-    this.qrcode = qrcode
-    // io.emit('qrcode', this.qrcode)
-  }
-  getQRCode() {
-    console.log(this.qrcode)
+import { prop, getModelForClass } from '@typegoose/typegoose'
 
-    return this.qrcode
-  }
+export class Bot {
+  @prop({ required: true })
+  uid!: string
 
-  isLogin(user: Bot.ContactSelfInterface) {
-    this.user = user
-    // io.emit('login', this.user)
-  }
+  @prop({ required: true, unique: true })
+  name!: string
+
+  @prop({ required: true, unique: true })
+  bindUser?: string
+
+  @prop({ required: false, default: 0 })
+  state?: number
+
+  @prop({ required: true })
+  created_at: Date
 }
 
-export default Bot
+const BotModel = getModelForClass(Bot)
+
+export default BotModel

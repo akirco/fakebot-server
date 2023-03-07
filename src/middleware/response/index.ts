@@ -33,7 +33,7 @@ function response<T>(_CODE: number, _MSG: string, _DATA?: T) {
   return { _CODE, _MSG, _DATA }
 }
 
-export const respHandler = async (ctx: Context, next: Next) => {
+export const responseJson = async (ctx: Context, next: Next) => {
   try {
     await next()
     const resp = ctx.response
