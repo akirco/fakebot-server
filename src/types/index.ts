@@ -9,11 +9,13 @@ declare type HttpMethod = 'get' | 'post' | 'put' | 'delete'
 declare type Socket = Server<DefaultEventsMap>
 
 declare interface Config {
+  socket: string
   port: number
   jwtSecret: string
   cronJob: string
   host: string
   tianApiKey: string
+  openaikey: string
   mongodb: {
     url: string
     source: string
@@ -28,11 +30,11 @@ declare interface WorkerMessage {
   process?: number
 }
 
-declare interface WorkerRepuestInfo {
+declare interface WorkerRepuestMessage {
   type: WechatyEventName | 'start'
   botname: string
-  userName: string
+  username: string
   token: string
 }
 
-export { ContactSelfInterface, HttpMethod, Socket, Config, WorkerMessage, WorkerRepuestInfo }
+export type { ContactSelfInterface, HttpMethod, Socket, Config, WorkerMessage, WorkerRepuestMessage }

@@ -39,7 +39,7 @@ export const responseJson = async (ctx: Context, next: Next) => {
     const resp = ctx.response
     ctx.body = response(resp.status, resp.message, resp.body)
     ctx.type = 'application/json'
-  } catch (error) {
+  } catch (error: any) {
     ctx.body = {
       _CODE: error.statusCode || 500,
       _MSG: error.message,

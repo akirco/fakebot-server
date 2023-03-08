@@ -1,23 +1,9 @@
 import Router from 'koa-router'
 const router = new Router()
-import { Controller } from '../controller'
+import controller from '../controller'
 
-const server = new Controller()
+router.get('/', controller.Home)
 
-/**
- * User router
- */
-router.get('/', server.Home)
-
-router.get('/signup', server.Signup)
-
-/**
- * Bot router
- */
-
-// router.post('/createBot', server.CreateBot)
+router.get('/signup', controller.Signup)
 
 export default router
-
-
-router.use()

@@ -1,10 +1,10 @@
-import UserModel from '../model/user'
+// import UserModel from '../model/user'
 
-const Service = {
-  async signup(data: unknown) {
-    const result = await UserModel.create(data)
-    return result
-  },
-}
+// const Service = {
+//   async signup(data: unknown) {
+//     const result = await UserModel.create(data)
+//     return result
+//   },
+// }
 
-export default Service
+// export default Service

@@ -12,7 +12,7 @@
       "runtimeArgs": ["-r", "ts-node/register"],
       "cwd": "${workspaceRoot}",
       "internalConsoleOptions": "openOnSessionStart",
-      "program": "${workspaceFolder}\\src\\app.ts"
+      "program": "${workspaceFolder}\\src\\index.ts"
     }
   ]
 }
