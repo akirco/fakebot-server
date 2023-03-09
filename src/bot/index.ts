@@ -97,6 +97,9 @@ export default class WechatyBot {
           if (message.type === 'login') {
             socket.emit('login', message)
           }
+          if (message.type === 'message') {
+            socket.emit('message', message)
+          }
         })
       }
     })
