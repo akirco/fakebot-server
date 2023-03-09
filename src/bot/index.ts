@@ -1,14 +1,13 @@
-import type { MessageInterface, ContactSelfInterface } from 'wechaty/impls'
-import type { WorkerMessage, WorkerRepuestMessage } from '../types'
-import type { Socket } from 'socket.io'
-
-import { WechatyBuilder, WechatyOptions, ScanStatus } from 'wechaty'
 import cluster, { Worker } from 'cluster'
+import type { Socket } from 'socket.io'
+import { ScanStatus, WechatyBuilder, WechatyOptions } from 'wechaty'
+import type { ContactSelfInterface, MessageInterface } from 'wechaty/impls'
 
-import logger from '../utils/logger'
-import { connect } from '../utils/connect'
-import { io, server } from './app'
 import { config } from '../config'
+import type { WorkerMessage, WorkerRepuestMessage } from '../types'
+import { connect } from '../utils/connect'
+import logger from '../utils/logger'
+import { io, server } from './app'
 
 export default class WechatyBot {
   masterProcess: typeof process
@@ -51,7 +50,7 @@ export default class WechatyBot {
   }
 
   public stop() {
-    logger.info(`🏷️\tWorker process is stoped`)
+    logger.info('🏷️\tWorker process is stoped')
 
     // Send a message to each worker to stop gracefully
     Object.values(cluster.workers!).forEach((worker) => {
@@ -83,7 +82,11 @@ export default class WechatyBot {
       // ? 这里可以加入数据库验证，socket.io中间件
       if (message.type === 'start' && message.token === '96+8764651253') {
         const worker = cluster.fork()
-        const data: WorkerMessage = { type: message.type, data: message.botname, process: worker.process.pid }
+        const data: WorkerMessage = {
+          type: message.type,
+          data: message.botname,
+          process: worker.process.pid,
+        }
         //* Send a message to the worker to start processing the request
         worker.send(data)
         worker.on('message', (message: WorkerMessage) => {
@@ -157,7 +160,9 @@ export default class WechatyBot {
    * @param signal unknown
    */
   private handleWorkerExit(worker: Worker, code: number, signal: string): void {
-    logger.warn(`Worker ${worker.process.pid} died with code ${code} and signal ${signal}`)
+    logger.warn(
+      `Worker ${worker.process.pid} died with code ${code} and signal ${signal}`
+    )
 
     //* Replace the dead worker
     const newWorker = cluster.fork()

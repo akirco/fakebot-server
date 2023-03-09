@@ -7,43 +7,22 @@
     /**
      * ES Module support
      */
-    "target": "ES2016",
-
-    // ES Modules: https://www.typescriptlang.org/tsconfig#module
-    // https://devblogs.microsoft.com/typescript/announcing-typescript-4-5-beta/#esm-nodejs
+    "target": "ES2022",
     "module": "NodeNext",
-
-    // https://www.typescriptlang.org/tsconfig#moduleResolution
-    // "moduleResolution": "nodenext",
     "moduleResolution": "node",
-
-    /**
-     * Type import/export checkings
-     */
-    // https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#type-only-imports-exports
-    "importsNotUsedAsValues": "error",
-    // https://www.typescriptlang.org/tsconfig#isolatedModules
-    // "isolatedModules": true,
-
-    /**
-     * Other settings
-     */
-    "traceResolution": false,
-    "noLib": false,
-    "resolveJsonModule": false,
-
     "declaration": true,
-    "declarationMap": false,
-    "sourceMap": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
-
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-
-    "lib": ["esnext"],
-    "outDir": "dist",
+    "lib": ["ESNext"],
+    "baseUrl": ".",
+    "outDir": "build",
     "strict": false,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "importsNotUsedAsValues": "error",
     "noEmitOnError": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
@@ -59,6 +38,6 @@
     "pretty": true
   },
 
-  "exclude": ["node_modules/", "dist/"],
+  "exclude": ["node_modules/", "build/"],
   "include": ["src"]
 }

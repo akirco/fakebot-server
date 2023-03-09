@@ -1,11 +1,11 @@
-import bodyParser from 'koa-bodyparser'
-import Koa from 'koa'
 import http from 'http'
+import Koa from 'koa'
+import bodyParser from 'koa-bodyparser'
 import { Server } from 'socket.io'
-import serve from 'koa-static'
+
+import { config } from '../config'
 import { responseJson } from '../middleware/response'
 import router from '../router'
-import { config } from '../config'
 
 const app = new Koa()
 const server = http.createServer(app.callback())
@@ -19,6 +19,5 @@ app.use(responseJson)
 app.use(router.routes())
 app.use(router.allowedMethods())
 app.use(bodyParser())
-app.use(serve(__dirname))
 
 export { io, server }

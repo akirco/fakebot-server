@@ -20,3 +20,4 @@
 // const BotModel = getModelForClass(Bot)
 
 // export default BotModel
+export {}

@@ -37,4 +37,11 @@ declare interface WorkerRepuestMessage {
   token: string
 }
 
-export type { ContactSelfInterface, HttpMethod, Socket, Config, WorkerMessage, WorkerRepuestMessage }
+export type {
+  ContactSelfInterface,
+  HttpMethod,
+  Socket,
+  Config,
+  WorkerMessage,
+  WorkerRepuestMessage,
+}

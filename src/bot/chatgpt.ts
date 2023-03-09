@@ -1,4 +1,5 @@
 import { ChatGPTAPI } from 'chatgpt'
+
 import { config } from '../config'
 
 const chat = async () => {
