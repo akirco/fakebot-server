@@ -8,6 +8,8 @@ import type { WorkerMessage, WorkerRepuestMessage } from '../types'
 import { connect } from '../utils/connect'
 import logger from '../utils/logger'
 import { io, server } from './app'
+import { generateQrCode } from '../utils/qrcode'
+import { chatgptReplyPlugin } from './plugins'
 
 export default class WechatyBot {
   masterProcess: typeof process
@@ -23,16 +25,13 @@ export default class WechatyBot {
     return cluster.isWorker
   }
 
-  /**
-   * * app entry
-   */
   public async start() {
     if (this.isPrimary) {
       logger.info(`🏷️\tMaster process:${process.pid} is running.`)
-      // connect mongodb
+      // ! connect mongodb
       await connect()
-      // Create server to receive requests & bind a middware
-      // ? handleRequest中间件的方式已移除
+      // ! Create server to receive requests & bind a middware
+      // ! handleRequest中间件的方式已移除
       // app.use(this.handleRequest.bind(this))
       io.on('connection', this.handleSocket.bind(this))
 
@@ -51,13 +50,16 @@ export default class WechatyBot {
 
   public stop() {
     logger.info('🏷️\tWorker process is stoped')
-
-    // Send a message to each worker to stop gracefully
+    // !Send a message to each worker to stop gracefully
     Object.values(cluster.workers!).forEach((worker) => {
-      worker!.send({ type: 'stop' })
+      const message = {
+        type: 'stop',
+        data: null,
+        process: worker?.process.pid,
+      } as WorkerMessage
+      worker!.send(message)
     })
-
-    // Forcefully kill workers after a timeout
+    // !Forcefully kill workers after a timeout
     setTimeout(() => {
       console.log('Forcefully killing workers...')
       Object.values(cluster.workers!).forEach((worker) => {
@@ -65,7 +67,7 @@ export default class WechatyBot {
       })
     }, 5000)
 
-    // Exit master process
+    // !Exit master process
     this.masterProcess.exit()
   }
 
@@ -74,7 +76,6 @@ export default class WechatyBot {
    * @field botname: string
    * @field username: string
    * @field token: string
-
    * @param socket socket
    */
   private handleSocket(socket: Socket) {
@@ -89,13 +90,10 @@ export default class WechatyBot {
         }
         //* Send a message to the worker to start processing the request
         worker.send(data)
-        worker.on('message', (message: WorkerMessage) => {
-          logger.debug('debug:', message)
+        worker.on('message', async (message: WorkerMessage) => {
           if (message.type === 'scan') {
-            socket.emit('scan', message)
-          }
-          if (message.type === 'dong') {
-            socket.emit('dong', message)
+            const qrcode = await generateQrCode(message.data)
+            socket.emit('scan', Object.assign({ qrimg: qrcode }, message))
           }
           if (message.type === 'login') {
             socket.emit('login', message)
@@ -116,10 +114,10 @@ export default class WechatyBot {
     process.on('message', this.handleMasterMessage.bind(this))
   }
 
-  private handleMasterMessage(message: WorkerMessage) {
+  private async handleMasterMessage(message: WorkerMessage) {
     // ! handleWorkerMessage事件会转发其他类型消息到这，引发错误，
     if (message.type === 'start') {
-      logger.info('handleMasterMessage\n', message)
+      logger.info('🏷️\tWechaty Worker process is start...')
       const options: WechatyOptions = {
         name: message.data,
         puppet: 'wechaty-puppet-wechat',
@@ -128,14 +126,16 @@ export default class WechatyBot {
         },
       }
       const wchatyBot = WechatyBuilder.build(options)
+      wchatyBot.use(chatgptReplyPlugin())
+      await wchatyBot.start().catch((err) => {
+        logger.error('🏷️\tWchatyBot Error:\n', err)
+      })
       wchatyBot
         .on('scan', this.onScan)
         .on('login', this.onLogin)
         .on('message', this.onMessage)
-        .start()
-        .catch((err) => {
-          logger.info('wchatyBot Error:\n', err)
-        })
+        .on('logout', this.onLogout)
+        .on('error', this.onError)
     } else {
       return
     }
@@ -148,7 +148,7 @@ export default class WechatyBot {
    */
   private handleWorkerMessage(worker: Worker, message: WorkerMessage) {
     if (message) {
-      console.log('handleWorkerMessage\n', message)
+      console.log('🏷️\tHandleWorkerMessage\n', message)
       worker.send(message)
     }
   }
@@ -161,7 +161,7 @@ export default class WechatyBot {
    */
   private handleWorkerExit(worker: Worker, code: number, signal: string): void {
     logger.warn(
-      `Worker ${worker.process.pid} died with code ${code} and signal ${signal}`
+      `🏷️\tWorker ${worker.process.pid} died with code ${code} and signal ${signal}`
     )
 
     //* Replace the dead worker
@@ -176,18 +176,13 @@ export default class WechatyBot {
    * @param status qrcode status
    */
   private onScan(qrcode: string, status: ScanStatus) {
+    logger.info('🏷️\tWechaty scan event...')
+
     if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
       const url = `https://wechaty.js.org/qrcode/${encodeURIComponent(qrcode)}`
       process.send!({
         type: 'scan',
         data: url,
-        process: process.pid,
-      } as WorkerMessage)
-    }
-    if (status === ScanStatus.Confirmed) {
-      process.send!({
-        type: 'dong',
-        data: 'scan_qrcode_success',
         process: process.pid,
       } as WorkerMessage)
     }
@@ -198,6 +193,7 @@ export default class WechatyBot {
    * @param user logined user
    */
   private onLogin(user: ContactSelfInterface) {
+    logger.info('🏷️\tWechaty login event...')
     const name = user.name()
     process.send!({
       type: 'login',
@@ -211,10 +207,29 @@ export default class WechatyBot {
    * @param message message
    */
   private onMessage(message: MessageInterface) {
+    logger.info('🏷️\tWechaty message event...')
     process.send!({
       type: 'message',
       data: message.text().toString(),
       process: process.pid,
     } as WorkerMessage)
+  }
+  private onLogout(user: ContactSelfInterface, reason?: string | undefined) {
+    logger.info('🏷️\tWechaty logout event...')
+    process.send!({
+      type: 'message',
+      data: { user, reason },
+      process: process.pid,
+    } as WorkerMessage)
+  }
+  private onError(error: unknown) {
+    if (error) {
+      logger.info('🏷️\tWechaty error event...')
+      process.send!({
+        type: 'message',
+        data: error.toString(),
+        process: process.pid,
+      } as WorkerMessage)
+    }
   }
 }

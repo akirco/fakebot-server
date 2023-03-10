@@ -11,7 +11,6 @@
     "prettier": "prettier ./src/**/*.ts --write",
     "lint": "eslint --fix"
   },
-  "main": "build/index.js",
   "keywords": [
     "wechaty",
     "koa2"
@@ -19,8 +18,8 @@
   "author": "akirco",
   "license": "MIT",
   "dependencies": {
-    "@swc/core": "^1.3.38",
-    "chatgpt": "^5.0.8",
+    "@swc/core": "^1.3.39",
+    "cross-fetch": "^3.1.5",
     "dotenv": "^16.0.3",
     "jsonwebtoken": "^9.0.0",
     "koa": "^2.14.1",
@@ -31,9 +30,10 @@
     "koa2-ratelimit": "^1.1.2",
     "mongoose": "7.0.1",
     "node-schedule": "^2.1.1",
+    "openai": "^3.2.1",
     "pino": "^8.11.0",
     "qrcode": "^1.5.1",
-    "rimraf": "^4.3.0",
+    "rimraf": "^4.4.0",
     "socket.io": "^4.6.1",
     "wechaty": "^1.20.2",
     "wechaty-puppet-wechat": "^1.18.4"
@@ -43,7 +43,7 @@
     "@types/koa-bodyparser": "^4.3.10",
     "@types/koa-router": "^7.4.4",
     "@types/koa-static": "^4.0.2",
-    "@types/node": "^18.14.6",
+    "@types/node": "^18.15.0",
     "@types/node-schedule": "^2.1.0",
     "@types/qrcode": "^1.5.0",
     "@types/shelljs": "^0.8.11",
@@ -55,7 +55,7 @@
     "pino-pretty": "^9.4.0",
     "prettier": "^2.8.4",
     "shelljs": "^0.8.5",
-    "terser": "^5.16.5",
+    "terser": "^5.16.6",
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.0",
     "tsup": "^6.6.3",

@@ -1,11 +1,8 @@
-// import UserModel from '../model/user'
+const service = {
+  validate: (data: unknown) => {
+    console.log(data)
+    return true
+  },
+}
 
-// const Service = {
-//   async signup(data: unknown) {
-//     const result = await UserModel.create(data)
-//     return result
-//   },
-// }
-
-// export default Service
-export {}
+export default service
