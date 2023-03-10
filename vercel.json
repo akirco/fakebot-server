@@ -1,14 +1,17 @@
 {
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "build",
   "builds": [
     {
-      "src": "build/index.js",
+      "src": "./build/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "build/index.js"
+      "dest": "./build/index.js"
     }
   ]
 }
