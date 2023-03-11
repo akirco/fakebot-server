@@ -1,12 +1,8 @@
 import type { ContactSelf, WechatyEventName } from 'wechaty'
-import type { DefaultEventsMap } from 'socket.io/dist/typed-events'
-import type { Server } from 'socket.io'
 
 declare type ContactSelfInterface = ContactSelf
 
 declare type HttpMethod = 'get' | 'post' | 'put' | 'delete'
-
-declare type Socket = Server<DefaultEventsMap>
 
 declare interface Config {
   socket: string
@@ -40,7 +36,6 @@ declare interface WorkerRepuestMessage {
 export type {
   ContactSelfInterface,
   HttpMethod,
-  Socket,
   Config,
   WorkerMessage,
   WorkerRepuestMessage,

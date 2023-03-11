@@ -5,3 +5,7 @@ dist
 build
 
 *.memory-card.json
+.vercel
+
+rest.http
+
